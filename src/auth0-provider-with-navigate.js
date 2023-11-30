@@ -14,7 +14,7 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
     };
 
     if (!(domain && clientId && redirectUri)) {
-        console.log(domain, clientId, redirectUri);
+        console.error("AUTH0 Config Error");
         return null;
     }
 
