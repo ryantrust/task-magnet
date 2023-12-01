@@ -1,7 +1,6 @@
 /*completely ripped from https://stackblitz.com/edit/react-ts-jqtyry?file=day_view.jsx*/
 import React from "react";
 import { Fragment, useEffect, useRef } from "react";
-import { Container, Draggable } from "react-smooth-dnd";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
