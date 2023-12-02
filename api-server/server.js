@@ -1,10 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const router = require('./routes/router');
+const dotenv = require('dotenv');
 const app = express();
 
-//listening to port 3000 for incoming requests 
-//integrate Auth0 authentication services 
+dotenv.config({ path: "../.env" });
+
+// TODO: integrate Auth0 authentication services
 
 const corsOptions = {
     origin: '*', 
@@ -16,10 +18,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/', router);
 
-const port = 4000 
+const port = process.env.API_PORT;
 const server = app.listen(port, () => {
-    console.log('Backend server is running on port ${port}')
-})
+    console.log('Backend server is running on port ${port}');
+});
 
 
 
