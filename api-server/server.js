@@ -20,7 +20,7 @@ app.use('/', router);
 
 const port = process.env.API_PORT;
 const server = app.listen(port, () => {
-    console.log('Backend server is running on port ${port}');
+    console.log(`API server is running on port ${port}`);
 });
 
 
