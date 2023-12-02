@@ -1,0 +1,21 @@
+.pomodoro-timer {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.timer {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
