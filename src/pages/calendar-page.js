@@ -9,6 +9,8 @@ import {
 } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 
+// TODO: address the jsx-a11y/anchor-is-valid violations and re-add rule
+
 const days = [
   { date: "2021-12-27" },
   { date: "2021-12-28" },
