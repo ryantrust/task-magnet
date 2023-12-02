@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const router = require('./routes/router');
+const mongoHandler = require('./mongo');
 const dotenv = require('dotenv');
 const app = express();
 
