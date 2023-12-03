@@ -19,3 +19,5 @@ jobs:
         working-directory: ./api-server
       - run: npm test
         working-directory: ./api-server
+        env:
+          MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
