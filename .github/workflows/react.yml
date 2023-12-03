@@ -1,6 +1,6 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests
 
-name: Build & Jest Unit Tests
+name: Build & Run Jest Unit Tests for React src
 
 on: [push, pull_request]
 
