@@ -16,7 +16,7 @@ const Calendar = () => {
 
   const addTask = () => {
     if (task && date) {
-      setTasks([...tasks, { task, date }]);
+      setTasks([...tasks, { date }]);
       setTask("");
       setDate("");
     }
@@ -108,19 +108,9 @@ const Calendar = () => {
                     <div className="text-lg font-semibold mb-2">
                       {format(new Date(formattedDate), "d")}
                     </div>
-                    {dayTasks.map((t, index) => (
-                      <div key={index} className="mb-1">
-                        <div className="bg-blue-500 text-white p-1 rounded">
-                          {t.task}
-                          <button
-                            className="text-red-500 ml-2"
-                            onClick={() => deleteTask(index)}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                    {dayTasks.length > 0 && (
+                      <div className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></div>
+                    )}
                   </td>
                 );
               })}
