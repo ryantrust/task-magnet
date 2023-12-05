@@ -1,58 +1,68 @@
-/* https://tailwindcomponents.com/component/shadcdn-profile-settings-in-tailwind */
-
 import React from "react";
+import {useAuth0} from "@auth0/auth0-react";
+import {useState, useEffect} from 'react'
+import {getProtectedResource} from "../services/message.service";
 
-export default () => (
-  <div>
-    <div className="hidden space-y-6 p-10 pb-16 md:block bg-white">
-      <div className="space-y-0.5">
-        <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-        <p className="text-muted-foreground">
-          Manage your account settings or logout.
-        </p>
-      </div>
-      <div className="shrink-0 bg-border h-[1px] w-full"></div>
-      <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-        <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-          <a
-            className="inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 px-4 py-2 hover:bg-transparent hover:underline justify-start"
-            href="#"
-          >
-            Profile
-          </a>
-          <a
-            className="inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 px-4 py-2 bg-muted hover:bg-muted justify-start"
-            href="#"
-          >
-            Account
-          </a>
-          <a
-            className="inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 px-4 py-2 hover:bg-transparent hover:underline justify-start"
-            href="#"
-          >
-            Appearance
-          </a>
-          <a
-            className="inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 px-4 py-2 hover:bg-transparent hover:underline justify-start"
-            href="#"
-          >
-            Notifications
-          </a>
-          <a
-            className="inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 px-4 py-2 hover:bg-transparent hover:underline justify-start"
-            href="#"
-          >
-            Display
-          </a>
-        </nav>
+const CheckProfile = () => {
+    const {user, isAuthenticated, isLoading, getAccessTokenSilently} = useAuth0();
+    const [message, setMessage] = useState("");
 
-        <div className="flex-1 lg:max-w-2xl">
-          <h2 className="text-lg font-bold tracking-tight">Account</h2>
-          <p className="text-sm text-muted-foreground">
-            Update your account settings or log out of TaskMagnet.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+    // const [userMetadata, setUserMetadata] = useState(null);
+    const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const getMessage = async () => {
+            const accessToken = await getAccessTokenSilently();
+            const {data, error} = await getProtectedResource(accessToken);
+
+            if (!isMounted) {
+                return;
+            }
+
+            if (data) {
+                setMessage(JSON.stringify(data, null, 2));
+            }
+
+            if (error) {
+                setMessage(JSON.stringify(error, null, 2));
+            }
+        };
+
+        getMessage();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [getAccessTokenSilently]);
+
+
+    if (isLoading) {
+        return <div>Loading ...</div>;
+    }
+
+    return (
+        isAuthenticated && (
+            <div>
+                <img src={user.picture} alt={user.name}/>
+                <h2>{user.name}</h2>
+                <p>{user.email}</p>
+                <h3>User Metadata</h3>
+                {user ? (
+                    <>
+                        <pre>{JSON.stringify(user, null, 2)}</pre>
+                        {/* <pre>{JSON.stringify(getAccessTokenSilently())}</pre> */}
+                    </>
+                ) : (
+                    "No user metadata defined"
+                )}
+                <div>
+                    <p>Auth only: {message}</p>
+                </div>
+            </div>
+        )
+    );
+};
+
+export default CheckProfile;

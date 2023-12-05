@@ -1,6 +1,8 @@
 import React from "react";
 import heroImage from "../assets/hero.png";
-
+import LoginButton from '../components/loginButton';
+import LogoutButton from '../components/logoutButton';
+import SignupButton from '../components/signupButton';
 export default () => (
   <body>
     <nav id="header" className="w-full z-30 top-0 text-black mr-5">
@@ -44,18 +46,9 @@ export default () => (
               You won't have to for long. Join TaskMagnet today.
             </p>
             <div className="md:justify-start flex justify-center">
-              <a
-                href="#"
-                className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-              >
-                Sign up
-              </a>
-              <a
-                href="#"
-                className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-              >
-                Login
-              </a>
+              <SignupButton />
+              <LoginButton />
+              <LogoutButton />
             </div>
           </div>
         </div>
