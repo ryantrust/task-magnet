@@ -17,9 +17,9 @@ export const getPublicResource = async () => {
     };
 };
 
-export const getProtectedResource = async (accessToken) => {
+export const getProtectedResource = async (sub, accessToken) => {
     const config = {
-        url: `${apiServerUrl}/api/private`,
+        url: `${apiServerUrl}/api/private/${sub}`,
         method: "GET",
         headers: {
             "content-type": "application/json",

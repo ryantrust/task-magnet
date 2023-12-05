@@ -29,4 +29,4 @@ async function close() {
     await client.close();
 }
 
-module.exports = { initialize, getTasksFromUser, close };
+module.exports = { mongoInit: initialize, getTasksFromUser, close };

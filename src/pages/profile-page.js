@@ -21,7 +21,7 @@ const CheckProfile = () => {
         console.log(at);
       setAccessToken(at);
       //TODO: Fix: Making two API calls?
-      const { data, error } = await getProtectedResource(at);
+      const { data, error } = await getProtectedResource("tasks", at);
 
       if (!isMounted) {
         return;

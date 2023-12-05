@@ -19,11 +19,12 @@ const TaskUser = require("./models/TaskUser");
 
 // api routes
 const TaskRoute = require("./routes/task.route");
-
-const checkJwt = auth({
+const {mongoInit} = require("./mongo");
+auth({
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   issuerBaseURL: `https://${process.env.REACT_APP_AUTH0_DOMAIN}/`,
 });
+mongoInit();
 
 app.get("/api/public", function (req, res) {
   res.json({

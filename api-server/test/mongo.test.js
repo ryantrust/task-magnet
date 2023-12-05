@@ -2,7 +2,7 @@ const mongoHandler = require("../mongo");
 const {ObjectId} = require("mongodb");
 const assert = require('assert');
 
-it('Initialize database', mongoHandler.initialize).timeout(20 * 1000);
+it('Initialize database', mongoHandler.mongoInit).timeout(20 * 1000);
 
 it('Get task', () => {
     mongoHandler.getTasksFromUser("auth0|656aa4f54d05409988700467").then(results => {
