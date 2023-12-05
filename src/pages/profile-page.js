@@ -7,13 +7,21 @@ const CheckProfile = () => {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout } =
     useAuth0();
   const [message, setMessage] = useState("");
+  const [, setAccessToken] = useState("");
 
-  useEffect(() => {
+  useEffect(function () {
     let isMounted = true;
 
     const getMessage = async () => {
-      const accessToken = await getAccessTokenSilently();
-      const { data, error } = await getProtectedResource(accessToken);
+        const at = await getAccessTokenSilently({
+            authorizationParams: {
+                audience: process.env.REACT_APP_AUTH0_AUDIENCE
+            },
+        });
+        console.log(at);
+      setAccessToken(at);
+      //TODO: Fix: Making two API calls?
+      const { data, error } = await getProtectedResource(at);
 
       if (!isMounted) {
         return;
@@ -22,7 +30,6 @@ const CheckProfile = () => {
       if (data) {
         setMessage(JSON.stringify(data, null, 2));
       }
-
       if (error) {
         setMessage(JSON.stringify(error, null, 2));
       }

@@ -5,7 +5,7 @@ const cors = require("cors");
 const https = require("https");
 const dotenv = require("dotenv");
 dotenv.config({ path: "../.env" });
-const port = process.env.API_PORT || 5001;
+const port = process.env.API_PORT;
 const { auth } = require("express-oauth2-jwt-bearer");
 const mongoose = require("mongoose");
 app.use(cors());
@@ -21,7 +21,7 @@ const TaskUser = require("./models/TaskUser");
 const TaskRoute = require("./routes/task.route");
 
 const checkJwt = auth({
-  audience: process.env.AUTH0_AUDIENCE,
+  audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   issuerBaseURL: `https://${process.env.REACT_APP_AUTH0_DOMAIN}/`,
 });
 
@@ -38,7 +38,7 @@ async function authUser(req) {
   };
 
   return new Promise((resolve, reject) => {
-    request = https.get(options, function (resp) {
+    let request = https.get(options, function (resp) {
       // console.log(`statusCode: ${resp.statusCode}`)
       let responseData = "";
       resp.on("data", (d) => {

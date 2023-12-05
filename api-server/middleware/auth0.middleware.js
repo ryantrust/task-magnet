@@ -4,7 +4,7 @@ dotenv.config({ path: ".../.env" });
 
 const validateAccessToken = auth({
   issuerBaseURL: `https://${process.env.REACT_APP_AUTH0_DOMAIN}`,
-  audience: process.env.AUTH0_AUDIENCE,
+  audience: process.env.REACT_APP_AUTH0_AUDIENCE,
 });
 
 module.exports = {

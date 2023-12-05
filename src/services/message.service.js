@@ -1,7 +1,5 @@
 import { callExternalApi } from "./external-api.service";
-
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
-
 export const getPublicResource = async () => {
     const config = {
         url: `${apiServerUrl}/api/public`,

@@ -1,7 +1,7 @@
 const https = require("https");
 
-async function getUserIdFromReq(req) {
-  var options = {
+function getUserIdFromReq(req) {
+  const options = {
     host: process.env.REACT_APP_AUTH0_DOMAIN,
     port: 443,
     path: "/userinfo",
@@ -11,7 +11,7 @@ async function getUserIdFromReq(req) {
     },
   };
   return new Promise((resolve, reject) => {
-    request = https.get(options, function (resp) {
+    let request = https.get(options, function (resp) {
       // console.log(`statusCode: ${resp.statusCode}`)
       let responseData = "";
       resp.on("data", (d) => {
@@ -19,7 +19,7 @@ async function getUserIdFromReq(req) {
       });
       resp.on("end", () => {
         const parsed = JSON.parse(responseData);
-        console.log(JSON.parse(responseData));
+        console.log(responseData);
         resolve(parsed.sub);
       });
     });
