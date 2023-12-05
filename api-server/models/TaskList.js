@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const TaskModel = require('../models/Task');
 const TaskListSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -12,10 +13,13 @@ const TaskListSchema = new mongoose.Schema({
         type: String,
         default: "Task List Description",
     },
-    taskLists: [{
+    tasks: [{
         type: mongoose.Types.ObjectId,
-        ref: "TaskList"
+        ref: "Task"
     }]
 
 })
+
+
+
 module.exports = mongoose.model('TaskList', TaskListSchema);

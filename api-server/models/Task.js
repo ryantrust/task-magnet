@@ -28,14 +28,12 @@ const TaskSchema = new mongoose.Schema({
     dateDue: {
         type: Date,
     },
-    color: {
-        type: String,
-        default: "FF0000"
-    },
     categories: [{
         type: mongoose.Types.ObjectId,
         ref: "TaskCategory"
     }]
 
 })
-module.exports = mongoose.model('Task', TaskSchema);
+const Task = mongoose.model('Task', TaskSchema);
+
+module.exports = Task;

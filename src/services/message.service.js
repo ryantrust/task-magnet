@@ -1,5 +1,7 @@
 import { callExternalApi } from "./external-api.service";
+
 const apiServerUrl = process.env.REACT_APP_API_SERVER_URL;
+
 export const getPublicResource = async () => {
     const config = {
         url: `${apiServerUrl}/api/public`,
@@ -17,9 +19,9 @@ export const getPublicResource = async () => {
     };
 };
 
-export const getProtectedResource = async (sub, accessToken) => {
+export const getProtectedResource = async (accessToken) => {
     const config = {
-        url: `${apiServerUrl}/api/private/${sub}`,
+        url: `${apiServerUrl}/api/task`,
         method: "GET",
         headers: {
             "content-type": "application/json",
