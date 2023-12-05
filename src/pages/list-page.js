@@ -689,7 +689,10 @@
 //     );
 // }
 
+// src/components/Todo.js
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Todo = () => {
   const [tasks, setTasks] = useState([]);
@@ -697,6 +700,7 @@ const Todo = () => {
     title: "",
     description: "",
     priority: "low",
+    dateDue: null,
     dateCreated: "",
   });
 
@@ -709,6 +713,7 @@ const Todo = () => {
       title: "",
       description: "",
       priority: "low",
+      dateDue: null,
       dateCreated: "",
     });
   };
@@ -740,6 +745,12 @@ const Todo = () => {
             setNewTask({ ...newTask, description: e.target.value })
           }
         />
+        <DatePicker
+          className="p-2 border border-gray-300 mr-2"
+          selected={newTask.dateDue}
+          onChange={(date) => setNewTask({ ...newTask, dateDue: date })}
+          placeholderText="Select due date"
+        />
         <select
           className="p-2 border border-gray-300 mr-2"
           value={newTask.priority}
@@ -762,6 +773,9 @@ const Todo = () => {
                 <h2 className="text-xl font-bold">{task.title}</h2>
                 <p>{task.description}</p>
                 <p className="text-sm text-gray-500">{`Priority: ${task.priority}`}</p>
+                <p className="text-sm text-gray-500">{`Due date: ${
+                  task.dateDue ? task.dateDue.toLocaleString() : "Not set"
+                }`}</p>
                 <p className="text-sm text-gray-500">{`Created on: ${task.dateCreated}`}</p>
               </div>
               <button
