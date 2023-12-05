@@ -20,13 +20,29 @@ async function initialize() {
     return dbConnection;
 }
 
-async function getTasksFromUser(user) {
-    let results = await dbConnection.collection("tasks").find({"author": user});
-    return await results.toArray();
+function getTasksFromUser(user) {
+    return dbConnection.collection("tasks").find({"author": user}).toArray();
+}
+
+function addTask(author, title, description, priority, status, dueDate, sharedWith) {
+    return dbConnection.collection("tasks").insertOne({
+        author: author,
+        title: title,
+        description: description,
+        priority: priority,
+        status: status,
+        dateCreated: Date.now(),
+        dueDate: dueDate,
+        sharedWith: sharedWith
+    });
+}
+
+function deleteTask(taskID) {
+    return dbConnection.collection("tasks").findOneAndDelete({_id: taskID});
 }
 
 async function close() {
     await client.close();
 }
 
-module.exports = { mongoInit: initialize, getTasksFromUser, close };
+module.exports = { mongoInit: initialize, getTasksFromUser, addTask, deleteTask, close };
