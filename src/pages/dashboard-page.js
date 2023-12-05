@@ -4,6 +4,7 @@ import { CgProfile } from "react-icons/cg";
 import todoImage from "../assets/todoimg.png"; // Placeholder image
 import calendarImage from "../assets/calendarimage.png"; // Placeholder image
 import pomodoroImage from "../assets/timerimage.png"; // Placeholder image
+import graphImage from "../assets/graphicon.png"; // Placeholder image
 
 const Dashboard = () => {
   const { logout } = useAuth0();
@@ -33,8 +34,8 @@ const Dashboard = () => {
   };
 
   const redirectToOption4Page = () => {
-    // Redirect to the Option 4 page
-    window.location.href = "/";
+    // Redirect to the graph page
+    window.location.href = "/graph";
   };
 
   return (
@@ -101,18 +102,17 @@ const Dashboard = () => {
             />
             <h1 className="text-4xl">Pomodoro Timer</h1>
           </div>
-          {/* Option 4 */}
+          {/* Graphs */}
           <div
             className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md transform transition-transform hover:scale-105"
             onClick={redirectToOption4Page}
           >
-            {/* Placeholder image or content */}
             <img
-              // src={/* Add your image source here */}
+              src={graphImage}
               alt="Option 4"
               className="mb-4 rounded-md object-cover w-32 h-32"
             />
-            <h1 className="text-4xl">Option 4</h1>
+            <h1 className="text-4xl">Task Graphs</h1>
           </div>
         </div>
       </div>
