@@ -10,6 +10,7 @@ import CalendarPage from "./pages/calendar-page";
 import ListPage from "./pages/list-page";
 import PomodoroTimer from "./pages/pomodoro-timer";
 import DashboardPage from "./pages/dashboard-page";
+import GraphPage from "./pages/graph-page";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
       <Route path="/callback" element={<CallbackPage />} />
       <Route path="/timer" element={<PomodoroTimer />} />
       <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/graph" element={<GraphPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
