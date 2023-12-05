@@ -43,7 +43,7 @@ const Dashboard = () => {
       <div className="p-8 flex justify-between items-center bg-gray-900 text-white shadow-md">
         <div className="flex items-center">
           <div
-            className="w-8 h-8 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center"
+            className="w-8 h-8 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center transform transition-transform hover:scale-105"
             onClick={handleProfileClick}
           >
             {<CgProfile />}
@@ -67,7 +67,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 gap-4 w-full max-w-screen-xl mx-auto">
           {/* Todo List */}
           <div
-            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md transform transition-transform hover:scale-105"
             onClick={redirectToTodoPage}
           >
             <img
@@ -79,7 +79,7 @@ const Dashboard = () => {
           </div>
           {/* Calendar View */}
           <div
-            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md transform transition-transform hover:scale-105"
             onClick={redirectToCalendarPage}
           >
             <img
@@ -91,7 +91,7 @@ const Dashboard = () => {
           </div>
           {/* Pomodoro Timer */}
           <div
-            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md transform transition-transform hover:scale-105"
             onClick={redirectToPomodoroPage}
           >
             <img
@@ -103,11 +103,12 @@ const Dashboard = () => {
           </div>
           {/* Option 4 */}
           <div
-            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md transform transition-transform hover:scale-105"
             onClick={redirectToOption4Page}
           >
+            {/* Placeholder image or content */}
             <img
-              // src={option4Image}
+              // src={/* Add your image source here */}
               alt="Option 4"
               className="mb-4 rounded-md object-cover w-32 h-32"
             />
