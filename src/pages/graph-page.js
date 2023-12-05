@@ -111,7 +111,7 @@ const CombinedChartComponent = () => {
   }, [sampleData]);
 
   return (
-    <div className="max-w-screen-lg mx-auto">
+    <div className="max-w-screen-xl mx-auto">
       <canvas ref={chartRef} width="400" height="200"></canvas>
     </div>
   );
