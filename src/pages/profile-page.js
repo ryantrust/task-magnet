@@ -51,7 +51,6 @@ const CheckProfile = () => {
           <h2 className="text-2xl font-bold text-center">{user.name}</h2>
           <p className="text-sm text-gray-600 text-center">{user.email}</p>
         </div>
-
         <h3 className="text-xl font-bold mb-2">User Metadata</h3>
         {user ? (
           <pre className="bg-gray-200 p-4 rounded-md overflow-auto">
@@ -60,11 +59,12 @@ const CheckProfile = () => {
         ) : (
           <p>No user metadata defined</p>
         )}
-
         <div className="mt-4">
           <p className="text-red-500">Auth only: {message}</p>
         </div>
-
+        <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
+          <a href="/dashboard">Dashboard</a>
+        </button>
         <button
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md"
           onClick={() => logout({ returnTo: window.location.origin })}
