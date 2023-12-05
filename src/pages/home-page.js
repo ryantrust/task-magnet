@@ -1,7 +1,6 @@
 import React from "react";
 import heroImage from "../assets/hero.png";
 import LoginButton from "../components/loginButton";
-import LogoutButton from "../components/logoutButton";
 import SignupButton from "../components/signupButton";
 export default () => (
   <body>
