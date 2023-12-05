@@ -1,8 +1,8 @@
 import React from "react";
 import heroImage from "../assets/hero.png";
-import LoginButton from '../components/loginButton';
-import LogoutButton from '../components/logoutButton';
-import SignupButton from '../components/signupButton';
+import LoginButton from "../components/loginButton";
+import LogoutButton from "../components/logoutButton";
+import SignupButton from "../components/signupButton";
 export default () => (
   <body>
     <nav id="header" className="w-full z-30 top-0 text-black mr-5">
@@ -48,7 +48,6 @@ export default () => (
             <div className="md:justify-start flex justify-center">
               <SignupButton />
               <LoginButton />
-              <LogoutButton />
             </div>
           </div>
         </div>
