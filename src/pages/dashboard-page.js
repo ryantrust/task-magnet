@@ -52,8 +52,7 @@ const Dashboard = () => {
             Profile
           </span>
         </div>
-        <p className="text-xl font-bold">ClassMagnet</p>
-        {/* Logout Button */}
+        <p className="text-xl font-bold">TaskMagnet</p>
         <button
           className="bg-red-500 text-white px-4 py-2 rounded"
           onClick={handleLogout}
