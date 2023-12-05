@@ -5,7 +5,7 @@ const cors = require('cors');
 const https = require('https');
 const dotenv = require('dotenv');
 dotenv.config({ path: "../.env" });
-const port = process.env.PORT || 5001;
+const port = process.env.API_PORT || 5001;
 const { auth } = require('express-oauth2-jwt-bearer');
 const mongoose = require('mongoose');
 app.use(cors());
@@ -25,8 +25,9 @@ const checkJwt = auth({
     issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
 });
 
+//TODO: remove async/Promise?????????
 async function authUser(req) {
-    var options = {
+    const options = {
         host: process.env.AUTH0_DOMAIN,
         port: 443,
         path: '/userinfo',
@@ -34,7 +35,7 @@ async function authUser(req) {
         headers: {
             'Authorization': req.headers.authorization
         }
-    }
+    };
 
     return new Promise((resolve, reject) => {
         request = https.get(options, function (resp) {
