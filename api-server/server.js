@@ -18,7 +18,7 @@ const TaskList = require("./models/TaskList");
 const TaskUser = require("./models/TaskUser");
 
 // api routes
-const TaskRoute = require("./routes/task.route");
+const TaskRoute = require("./routes/private-routes");
 const {mongoInit} = require("./mongo");
 auth({
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
