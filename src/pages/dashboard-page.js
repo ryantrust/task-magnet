@@ -4,7 +4,6 @@ import { CgProfile } from "react-icons/cg";
 import todoImage from "../assets/todoimg.png"; // Placeholder image
 import calendarImage from "../assets/calendarimage.png"; // Placeholder image
 import pomodoroImage from "../assets/timerimage.png"; // Placeholder image
-// import option4Image from "./images/option4-image.jpg"; // Placeholder image
 
 const Dashboard = () => {
   const { logout } = useAuth0();
@@ -16,6 +15,26 @@ const Dashboard = () => {
   const handleProfileClick = () => {
     // Redirect to the profile page
     window.location.href = "/profile";
+  };
+
+  const redirectToTodoPage = () => {
+    // Redirect to the Todo List page
+    window.location.href = "/list";
+  };
+
+  const redirectToCalendarPage = () => {
+    // Redirect to the Calendar View page
+    window.location.href = "/calendar";
+  };
+
+  const redirectToPomodoroPage = () => {
+    // Redirect to the Pomodoro Timer page
+    window.location.href = "/timer";
+  };
+
+  const redirectToOption4Page = () => {
+    // Redirect to the Option 4 page
+    window.location.href = "/";
   };
 
   return (
@@ -48,7 +67,10 @@ const Dashboard = () => {
         {/* Dashboard Selections */}
         <div className="grid grid-cols-2 gap-4 w-full max-w-screen-xl mx-auto">
           {/* Todo List */}
-          <div className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md">
+          <div
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            onClick={redirectToTodoPage}
+          >
             <img
               src={todoImage}
               alt="Todo"
@@ -57,7 +79,10 @@ const Dashboard = () => {
             <h1 className="text-4xl">Todo List</h1>
           </div>
           {/* Calendar View */}
-          <div className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md">
+          <div
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            onClick={redirectToCalendarPage}
+          >
             <img
               src={calendarImage}
               alt="Calendar"
@@ -66,7 +91,10 @@ const Dashboard = () => {
             <h1 className="text-4xl">Calendar View</h1>
           </div>
           {/* Pomodoro Timer */}
-          <div className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md">
+          <div
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            onClick={redirectToPomodoroPage}
+          >
             <img
               src={pomodoroImage}
               alt="Pomodoro"
@@ -75,7 +103,10 @@ const Dashboard = () => {
             <h1 className="text-4xl">Pomodoro Timer</h1>
           </div>
           {/* Option 4 */}
-          <div className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md">
+          <div
+            className="flex flex-col items-center justify-center h-64 p-8 rounded cursor-pointer shadow-md"
+            onClick={redirectToOption4Page}
+          >
             <img
               // src={option4Image}
               alt="Option 4"
