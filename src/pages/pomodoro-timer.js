@@ -44,38 +44,36 @@ const PomodoroTimer = () => {
   const progress = (totalTime - totalSeconds) / totalTime;
 
   return (
-      <>
-        <div className="w-full top-0">
-          <Header />
-          <div className="w-full h-10 bg-gray-300 mb-4">
-            <div
-                className="h-full bg-green-500"
-                style={{ width: `${progress * 100}%` }}
-            ></div>
-          </div>
+    <>
+      <div className="w-full top-0">
+        <Header />
+        <div className="w-full h-10 bg-gray-300">
+          <div
+            className="h-full bg-green-500"
+            style={{ width: `${progress * 100}%` }}
+          ></div>
         </div>
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-
-
-          <div className="text-9xl font-bold text-gray-800 mb-4">
-            {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-          </div>
-          <div className="flex gap-4">
-            <button
-                onClick={toggleTimer}
-                className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700"
-            >
-              {isActive ? "Pause" : "Start"}
-            </button>
-            <button
-                onClick={resetTimer}
-                className="px-4 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-700"
-            >
-              Reset
-            </button>
-          </div>
+      </div>
+      <div className="flex flex-col items-center justify-center h-full pt-10 mt-10">
+        <div className="text-9xl font-bold text-gray-800 mb-4">
+          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
         </div>
-      </>
+        <div className="flex gap-4">
+          <button
+            onClick={toggleTimer}
+            className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700"
+          >
+            {isActive ? "Pause" : "Start"}
+          </button>
+          <button
+            onClick={resetTimer}
+            className="px-4 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-700"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 
