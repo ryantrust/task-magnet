@@ -12,27 +12,26 @@ const Header = () => {
     logout({ returnTo: window.location.origin });
   };
 
-  <div className="p-8 flex justify-between items-center bg-gray-900 text-white shadow-md">
+  return <div className="p-8 flex justify-between items-center bg-gray-900 text-white shadow-md">
     <div className="flex items-center">
       <div
-        className="w-8 h-8 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center"
-        onClick={handleProfileClick}
+          className="w-8 h-8 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center transform transition-transform hover:scale-105"
+          onClick={handleProfileClick}
       >
         {<CgProfile />}
       </div>
       <span className="ml-2 cursor-pointer" onClick={handleProfileClick}>
-        Profile
-      </span>
+            Profile
+          </span>
     </div>
-    <p className="text-xl font-bold">ClassMagnet</p>
-    {/* Logout Button */}
+    <p className="text-xl font-bold">TaskMagnet</p>
     <button
-      className="bg-red-500 text-white px-4 py-2 rounded"
-      onClick={handleLogout}
+        className="bg-red-500 text-white px-4 py-2 rounded"
+        onClick={handleLogout}
     >
       Logout
     </button>
-  </div>;
+  </div>
 };
 
 export default Header;

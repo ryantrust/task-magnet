@@ -1,6 +1,7 @@
 // CombinedChartComponent.js
 import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
+import Header from "../components/header";
 
 const CombinedChartComponent = () => {
   const chartRef = useRef(null);
@@ -111,9 +112,12 @@ const CombinedChartComponent = () => {
   }, [sampleData]);
 
   return (
-    <div className="max-w-screen-xl mx-auto">
-      <canvas ref={chartRef} width="400" height="200"></canvas>
-    </div>
+      <>
+        <Header />
+        <div className="max-w-screen-xl mx-auto">
+          <canvas ref={chartRef} width="400" height="200"></canvas>
+        </div>
+      </>
   );
 };
 
