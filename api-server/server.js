@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const https = require("https");
-require("dotenv").config({ path: "./config.env" });
-const port = process.env.PORT || 5001;
+require("dotenv").config({ path: "../.env" });
+const port = process.env.API_PORT || 5001;
 const { auth } = require('express-oauth2-jwt-bearer');
 const mongoose = require("mongoose");
 app.use(cors());
@@ -39,7 +39,7 @@ app.use('/api/tasklist', TaskListRoute);
 
 app.listen(port, () => {
     // perform a database connection when server starts
-    mongoose.connect(process.env.ATLAS_URI)
+    mongoose.connect(process.env.MONGO_CONNECTION_STRING)
         .then(() => {
             console.log("Connected to MongoDB");
         })
