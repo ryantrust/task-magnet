@@ -1,32 +1,122 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../components/header";
+import axios from "axios";
+import { getProtectedResource } from "../services/message.service";
 
 const Todo = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
-    priority: "low",
+    priority: "Low",
     dateDue: null,
     dateCreated: "",
   });
 
-  const addTask = () => {
-    setTasks([
+const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout } = useAuth0();
+// const [userMetadata, setUserMetadata] = useState(null);
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+const [accessToken, setAccessToken] = useState("");
+const [buttonClicked, setButtonClicked] = useState(false);
+const handleButtonClick = () => {
+  setButtonClicked(true); 
+};
+
+//getting access token 
+useEffect(() => {
+  let isMounted = true;
+
+  const fetchTokenAndTasks = async () => {
+    try {
+      const accessToken = await getAccessTokenSilently({ authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE } });
+      setAccessToken(accessToken);
+
+      // Call getTask right after obtaining the access token
+      await getTask(accessToken);
+    } catch (error) {
+      console.error('Error fetching token or tasks:', error);
+    } finally {
+      if (!isMounted) {
+        return;
+      }
+    }
+  };
+
+  fetchTokenAndTasks();
+
+  return () => {
+    isMounted = false;
+  };
+}, [getAccessTokenSilently]);
+
+//load the old tasks on the page (needs mapping for priorities)
+const getTask = async (accessToken) => {
+  try {
+    const response = await axios.get('http://localhost:5001/api/task/', {
+      headers: { authorization: `Bearer ${accessToken}` },
+    });
+    setTasks(response.data);
+    console.log(response); 
+  } catch (error) {
+    console.error('Cannot grab tasks', error);
+  }
+};
+
+
+const addTask = async () => {
+  try {
+    // Mapping priority with status
+    let priorityValue;
+    switch (newTask.priority) {
+      case "Low":
+        priorityValue = 1;
+        break;
+      case "Medium":
+        priorityValue = 2;
+        break;
+      case "High":
+        priorityValue = 3;
+        break;
+      default:
+        priorityValue = 1; // Set a default value if needed
+    }
+
+    // Update the newTask object passed with correct integer representation (status)
+    const updatedNewTask = {
+      ...newTask,
+      status: priorityValue,
+      dateCreated: new Date().toLocaleString(),
+    };
+
+    const response = await axios.post('http://localhost:5001/api/task/', updatedNewTask, {
+      headers: { authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response);
+
+    const updatedTasks = [
       ...tasks,
-      { ...newTask, dateCreated: new Date().toLocaleString() },
-    ]);
+      updatedNewTask, // Use updatedNewTask instead of newTask
+    ];
+
+    setTasks(updatedTasks);
+
     setNewTask({
       title: "",
       description: "",
-      priority: "low",
+      priority: "Low",
       dateDue: null,
       dateCreated: "",
     });
-  };
+  } catch (error) {
+    console.error('cannot add task', error);
+  }
+};
 
+  
+  //delete tasks (work on retrieving particular task id and then deleting it)
   const deleteTask = (index) => {
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
@@ -48,9 +138,9 @@ const Todo = () => {
                       setNewTask({ ...newTask, priority: e.target.value })
                   }
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
               </select>
               <input
                   type="text"
@@ -83,6 +173,7 @@ const Todo = () => {
               Create Task
             </button>
           </div>
+          
 
           <ul>
             {tasks.map((task, index) => (
