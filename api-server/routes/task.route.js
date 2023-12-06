@@ -79,14 +79,14 @@ router.post('/', checkJwt, async (req, res, next) => {
 
         const newTask = await TaskModel.create(newTaskData);
 
-        const taskList = await TaskListModel.findOne({ _id: req.body.taskList, userId: UID });
-        if (!taskList) {
-            return res.status(404).json({ error: 'Task List not found' });
-        }
+        // const taskList = await TaskListModel.findOne({ _id: req.body.taskList, userId: UID });
+        // if (!taskList) {
+        //     return res.status(404).json({ error: 'Task List not found' });
+        // }
 
         // Update the Task List's tasks array to include the newly created task's ObjectId
-        taskList.tasks.push(newTask._id);
-        await taskList.save();
+        // taskList.tasks.push(newTask._id);
+        // await taskList.save();
 
         res.status(201).json(newTask);
     } catch (error) {
@@ -103,7 +103,7 @@ router.put('/:taskId', checkJwt, checkTaskOwnership, async (req, res, next) => {
         // Update the specific task for the user by ID
         const newTaskData = {
             userId: UID,
-            taskList: req.body.taskList,
+            // taskList: req.body.taskList,
             title: req.body.title || 'Untitled Task',
             description: req.body.description || 'Task Description',
             status: req.body.status || 1,
@@ -138,16 +138,16 @@ router.delete('/:taskId', checkJwt, checkTaskOwnership, async (req, res, next) =
         }
 
         // Find the associated Task List and remove the task's ObjectId from its tasks array
-        const taskList = await TaskListModel.findOne({ _id: taskToDelete.taskList, userId: UID }); // Modify this to identify the specific task list
+        // const taskList = await TaskListModel.findOne({ _id: taskToDelete.taskList, userId: UID }); // Modify this to identify the specific task list
 
-        if (!taskList) {
-            return res.status(404).json({ error: 'Task List not found' });
-        }
+        // if (!taskList) {
+        //     return res.status(404).json({ error: 'Task List not found' });
+        // }
 
-        taskList.tasks = taskList.tasks.filter(taskId => taskId.toString() !== req.params.taskId);
-        console.log("tasks:")
-        console.log(taskList.tasks);
-        await taskList.save();
+        // taskList.tasks = taskList.tasks.filter(taskId => taskId.toString() !== req.params.taskId);
+        // console.log("tasks:")
+        // console.log(taskList.tasks);
+        // await taskList.save();
 
         // Delete the task
         await TaskModel.deleteOne({ _id: req.params.taskId, userId: UID });
