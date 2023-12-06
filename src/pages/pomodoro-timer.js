@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/header";
 
 const PomodoroTimer = () => {
+  const [sessions, setSessions] = useState([]);
+  const [currentSession, setCurrentSession] = useState(null);
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -15,6 +17,7 @@ const PomodoroTimer = () => {
           if (minutes === 0) {
             clearInterval(interval);
             setIsActive(false);
+            endSession();
           } else {
             setMinutes(minutes - 1);
             setSeconds(59);
@@ -28,7 +31,27 @@ const PomodoroTimer = () => {
     return () => clearInterval(interval);
   }, [isActive, minutes, seconds]);
 
+  const startSession = () => {
+    const session = { startTime: new Date(), endTime: null, duration: null };
+    setCurrentSession(session);
+  };
+
+  const endSession = () => {
+    if (currentSession) {
+      currentSession.endTime = new Date();
+      currentSession.duration =
+        (currentSession.endTime - currentSession.startTime) / 1000; // in seconds
+      setSessions([...sessions, currentSession]);
+      setCurrentSession(null);
+    }
+  };
+
   const toggleTimer = () => {
+    if (!isActive) {
+      startSession();
+    } else {
+      endSession();
+    }
     setIsActive(!isActive);
   };
 
@@ -36,11 +59,23 @@ const PomodoroTimer = () => {
     setIsActive(false);
     setMinutes(25);
     setSeconds(0);
+    endSession();
+  };
+
+  const formatTime = (duration) => {
+    if (duration < 60) {
+      return duration === 1 ? `${duration} second` : `${duration} seconds`;
+    } else {
+      const minutes = Math.floor(duration / 60);
+      const remainingSeconds = Math.floor(duration % 60);
+      const minuteLabel = minutes === 1 ? "minute" : "minutes";
+      const secondLabel = remainingSeconds === 1 ? "second" : "seconds";
+      return `${minutes} ${minuteLabel} ${remainingSeconds} ${secondLabel}`;
+    }
   };
 
   const totalSeconds = minutes * 60 + seconds;
   const totalTime = 25 * 60; // Assuming 25 minutes for a Pomodoro session
-
   const progress = (totalTime - totalSeconds) / totalTime;
 
   return (
@@ -72,6 +107,19 @@ const PomodoroTimer = () => {
             Reset
           </button>
         </div>
+        {sessions.length > 0 && (
+          <div className="mt-10 text-center">
+            <h2 className="text-xl font-bold mb-2">Session History</h2>
+            <div className="flex space-x-4">
+              {sessions.map((session, index) => (
+                <div key={index} className="bg-gray-100 p-2 rounded shadow-md">
+                  <p className="font-bold">{`Session ${index + 1}:`}</p>
+                  <p>{formatTime(session.duration)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
