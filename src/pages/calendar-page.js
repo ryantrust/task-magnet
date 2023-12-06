@@ -14,10 +14,11 @@ const Calendar = () => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState("");
   const [date, setDate] = useState("");
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const addTask = () => {
     if (task && date) {
-      setTasks([...tasks, { date }]);
+      setTasks([...tasks, { date, task }]);
       setTask("");
       setDate("");
     }
@@ -50,6 +51,14 @@ const Calendar = () => {
   };
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const handleDayClick = (formattedDate) => {
+    setSelectedDay(formattedDate);
+  };
+
+  const closeModal = () => {
+    setSelectedDay(null);
+  };
 
   return (
     <>
@@ -105,13 +114,14 @@ const Calendar = () => {
                   return (
                     <td
                       key={formattedDate}
-                      className={`border p-4 relative ${
+                      className={`border p-4 relative cursor-pointer ${
                         colIndex === 0
                           ? "text-red-500"
                           : colIndex === 6
                           ? "text-blue-500"
                           : ""
                       }`}
+                      onClick={() => handleDayClick(formattedDate)}
                     >
                       <div className="text-lg font-semibold mb-2">
                         {format(new Date(formattedDate), "d")}
@@ -126,6 +136,38 @@ const Calendar = () => {
             ))}
           </tbody>
         </table>
+
+        {selectedDay && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-4 rounded-md">
+              <h3 className="text-lg font-semibold mb-4">
+                Tasks for {format(new Date(selectedDay), "MMMM d, yyyy")}
+              </h3>
+              {tasks
+                .filter((t) => t.date === selectedDay)
+                .map((task, index) => (
+                  <div key={index} className="mb-2">
+                    {task.task}
+                    <button
+                      className="ml-2 text-red-500"
+                      onClick={() => deleteTask(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              {tasks.filter((t) => t.date === selectedDay).length === 0 && (
+                <p>No tasks to display</p>
+              )}
+              <button
+                className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+                onClick={closeModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
