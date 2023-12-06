@@ -52,82 +52,88 @@ const Calendar = () => {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-      <>
-        <Header />
-        <div className="container mx-auto mt-8 text-center">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold">
-              {format(new Date(), "MMMM yyyy", { locale: enUS })}
-            </h2>
-          </div>
-          <div className="flex items-center justify-center mb-4">
-            <input
-                type="text"
-                className="border p-2 mr-2"
-                placeholder="Enter task"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-            />
-            <input
-                type="date"
-                className="border p-2 mr-2"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-            />
-            <button className="bg-blue-500 text-white p-2" onClick={addTask}>
-              Add Task
-            </button>
-          </div>
+    <>
+      <Header />
+      <div className="container mx-auto mt-8 text-center">
+        <div className="mb-4">
+          <h2 className="text-3xl font-semibold text-gray-800">
+            {format(new Date(), "MMMM yyyy", { locale: enUS })}
+          </h2>
+        </div>
+        <div className="flex items-center justify-center mb-4">
+          <input
+            type="text"
+            className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
+            placeholder="Enter task"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          />
+          <input
+            type="date"
+            className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <button
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+            onClick={addTask}
+          >
+            Add Task
+          </button>
+        </div>
 
-          <table className="table-fixed border-collapse mx-auto">
-            <thead>
+        <table className="table-fixed border-collapse mx-auto w-full">
+          <thead>
             <tr>
               {daysOfWeek.map((day) => (
-                  <th key={day} className="border p-2">
-                    {day}
-                  </th>
+                <th key={day} className="border p-2 bg-gray-200 text-gray-700">
+                  {day}
+                </th>
               ))}
             </tr>
-            </thead>
-            <tbody>
+          </thead>
+          <tbody>
             {[...Array(6)].map((_, rowIndex) => (
-                <tr key={rowIndex}>
-                  {daysOfWeek.map((_, colIndex) => {
-                    const formattedDate =
-                        generateDays()[rowIndex * daysOfWeek.length + colIndex];
-                    const dayTasks = tasks.filter((t) => t.date === formattedDate);
+              <tr key={rowIndex}>
+                {daysOfWeek.map((_, colIndex) => {
+                  const formattedDate =
+                    generateDays()[rowIndex * daysOfWeek.length + colIndex];
+                  const dayTasks = tasks.filter(
+                    (t) => t.date === formattedDate
+                  );
 
-                    return (
-                        <td
-                            key={formattedDate}
-                            className={`border p-4 relative ${
-                                colIndex === 0
-                                    ? "text-red-500"
-                                    : colIndex === 6
-                                        ? "text-blue-500"
-                                        : ""
-                            }`}
-                        >
-                          <div className="text-lg font-semibold mb-2">
-                            {format(new Date(formattedDate), "d")}
-                          </div>
-                          {dayTasks.length > 0 && (
-                              <div className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></div>
-                          )}
-                        </td>
-                    );
-                  })}
-                </tr>
+                  return (
+                    <td
+                      key={formattedDate}
+                      className={`border p-4 relative ${
+                        colIndex === 0
+                          ? "text-red-500"
+                          : colIndex === 6
+                          ? "text-blue-500"
+                          : ""
+                      }`}
+                    >
+                      <div className="text-lg font-semibold mb-2">
+                        {format(new Date(formattedDate), "d")}
+                      </div>
+                      {dayTasks.length > 0 && (
+                        <div className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
             ))}
-            </tbody>
-          </table>
-        </div>
-      </>);
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 };
 
 function App() {
   return (
-    <div className="App">
+    <div className="App min-h-screen bg-gray-100">
       <Calendar />
     </div>
   );
