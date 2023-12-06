@@ -20,10 +20,6 @@ const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout } = use
 // const [userMetadata, setUserMetadata] = useState(null);
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const [accessToken, setAccessToken] = useState("");
-const [buttonClicked, setButtonClicked] = useState(false);
-const handleButtonClick = () => {
-  setButtonClicked(true); 
-};
 
 //getting access token 
 useEffect(() => {
@@ -65,6 +61,38 @@ const getTask = async (accessToken) => {
   }
 };
 
+const exportTasksAsCSV = () => {
+  if (tasks.length === 0) {
+    console.log("No tasks to export.");
+    return;
+  }
+
+  const csvData = tasks.map((task) => ({
+    Title: task.title,
+    Description: task.description,
+    Priority: task.priority,
+    "Due Date": task.dateDue ? task.dateDue.toLocaleString() : "Not set",
+    "Created On": task.dateCreated,
+  }));
+
+  const fileName = "tasks_export"; // Set the desired file name here
+
+  const csvHeaders = Object.keys(csvData[0]);
+  const csvRows = [
+    csvHeaders.join(","), // Headers row
+    ...csvData.map((row) => csvHeaders.map((fieldName) => row[fieldName]).join(",")), // Data rows
+  ];
+
+  const csvContent = csvRows.join("\n");
+  const csvBlob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const csvURL = URL.createObjectURL(csvBlob);
+  const tempLink = document.createElement("a");
+  tempLink.href = csvURL;
+  tempLink.setAttribute("download", `${fileName}.csv`);
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
+};
 
 const addTask = async () => {
   try {
@@ -171,6 +199,12 @@ const addTask = async () => {
                 onClick={addTask}
             >
               Create Task
+            </button>
+            <button
+                className="bg-blue-500 text-white p-3 rounded mt-3"
+                onClick={exportTasksAsCSV}
+            >
+              Export Tasks
             </button>
           </div>
           
