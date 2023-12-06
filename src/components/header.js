@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
-  const { logout } = useAuth0();
+  const { logout , user} = useAuth0();
   const handleProfileClick = () => {
     // Redirect to the profile page
     window.location.href = "/profile";
@@ -12,14 +12,18 @@ const Header = () => {
     logout({ returnTo: window.location.origin });
   };
 
-  return <div className="p-8 flex justify-between items-center bg-gray-900 text-white shadow-md">
-    <div className="flex items-center">
+  const profilePic = user && user.picture?
+      <img className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center transform transition-transform hover:scale-105" src={user.picture} /> :
       <div
           className="w-8 h-8 bg-gray-200 rounded-full cursor-pointer flex items-center justify-center transform transition-transform hover:scale-105"
           onClick={handleProfileClick}
       >
-        {<CgProfile />}
-      </div>
+        <CgProfile />
+      </div>;
+
+  return <div className="p-8 flex justify-between items-center bg-gray-900 text-white shadow-md">
+    <div className="flex items-center">
+      {profilePic}
       <span className="ml-2 cursor-pointer" onClick={handleProfileClick}>
             Profile
           </span>
