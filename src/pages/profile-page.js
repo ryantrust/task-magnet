@@ -10,6 +10,7 @@ const CheckProfile = () => {
     // const [userMetadata, setUserMetadata] = useState(null);
     const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 
+
     useEffect(() => {
         let isMounted = true;
 
@@ -28,6 +29,8 @@ const CheckProfile = () => {
             if (error) {
                 setMessage(JSON.stringify(error, null, 2));
             }
+
+
         };
 
         getMessage();
