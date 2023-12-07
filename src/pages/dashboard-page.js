@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { CgProfile } from "react-icons/cg";
 import todoImage from "../assets/todoimg.png"; // Placeholder image
 import calendarImage from "../assets/calendarimage.png"; // Placeholder image
 import pomodoroImage from "../assets/timerimage.png"; // Placeholder image

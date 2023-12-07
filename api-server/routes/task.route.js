@@ -32,7 +32,6 @@ const checkTaskOwnership = async (req, res, next) => {
 router.get('/', checkJwt, async (req, res, next) => {
     try {
         const UID = await getUserIdFromReq(req); // Get user ID from request
-        console.log(UID);
         // Fetch all tasks for the user
         const tasks = await TaskModel.find({ userId: UID });
         res.json(tasks);
@@ -66,7 +65,6 @@ router.post('/', checkJwt, async (req, res, next) => {
         const UID = await getUserIdFromReq(req); // Get user ID from request
 
         // Create a new task using request body data and the authenticated user's ID
-        console.log(req.body)
         const newTaskData = {
             userId: UID,
             taskList: req.body.taskList,
