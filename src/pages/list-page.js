@@ -12,7 +12,7 @@ const Todo = () => {
     title: "",
     description: "",
     priority: "Low",
-    dateDue: null,
+    dateDue: new Date(),
     dateCreated: "",
   });
 
@@ -60,7 +60,6 @@ const Todo = () => {
         headers: { authorization: `Bearer ${accessToken}` },
       });
       setTasks(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Cannot grab tasks", error);
     }
@@ -133,11 +132,12 @@ const Todo = () => {
           headers: { authorization: `Bearer ${accessToken}` },
         }
       );
-      console.log(response);
+
+      const returnedTask = response.data;
 
       const updatedTasks = [
         ...tasks,
-        updatedNewTask, // Use updatedNewTask instead of newTask
+        returnedTask,
       ];
 
       setTasks(updatedTasks);
@@ -146,7 +146,7 @@ const Todo = () => {
         title: "",
         description: "",
         priority: "Low",
-        dateDue: null,
+        dateDue: new Date(),
         dateCreated: "",
       });
     } catch (error) {
