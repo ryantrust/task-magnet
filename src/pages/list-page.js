@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../components/header";
 import axios from "axios";
-import { getProtectedResource } from "../services/message.service";
 
 const Todo = () => {
   const [tasks, setTasks] = useState([]);
@@ -151,7 +150,7 @@ const Todo = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5001/api/task/",
+        `${process.env.REACT_APP_API_SERVER_URL}/api/task/`,
         updatedNewTask,
         {
           headers: { authorization: `Bearer ${accessToken}` },
@@ -216,17 +215,17 @@ const Todo = () => {
   const deleteTask = async (index) => {
     try {
       const deleted_task = tasks[index]._id;
+      const updatedTasks = [...tasks];
+      updatedTasks.splice(index, 1);
+      setTasks(updatedTasks);
+      setFilteredTasks(updatedTasks);
       const response = await axios.delete(
-        `http://localhost:5001/api/task/${deleted_task}`,
+        `${process.env.REACT_APP_API_SERVER_URL}/api/task/${deleted_task}`,
         {
           headers: { authorization: `Bearer ${accessToken}` },
         }
       );
 
-      const updatedTasks = [...tasks];
-      updatedTasks.splice(index, 1);
-      setTasks(updatedTasks);
-      setFilteredTasks(updatedTasks);
     }
     catch (error) {
       console.error("Cannot grab tasks", error);

@@ -75,7 +75,6 @@ const Calendar = () => {
   };
 
   const deleteTask = async (id) => {
-    //TODO: FIX
     let index = tasks.findIndex(task => task._id === id);
     let newTasks = [...tasks];
     newTasks.splice(index, 1);
