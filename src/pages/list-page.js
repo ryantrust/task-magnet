@@ -59,7 +59,34 @@ const Todo = () => {
       const response = await axios.get("http://localhost:5001/api/task/", {
         headers: { authorization: `Bearer ${accessToken}` },
       });
-      setTasks(response.data);
+  
+      // Mapping status to priority
+      const mappedTasks = response.data.map(task => {
+        let priority;
+        switch (task.status) {
+          case 1:
+            priority = "Low";
+            break;
+          case 2:
+            priority = "Medium";
+            break;
+          case 3:
+            priority = "High";
+            break;
+          default:
+            priority = "Low"; // Default priority if status is not 1, 2, or 3
+        }
+  
+        // Creating a new object with the priority attribute
+        return {
+          ...task,
+          priority: priority
+        };
+      });
+  
+      // Setting the tasks with updated priorities
+      setTasks(mappedTasks);
+      console.log(response);
     } catch (error) {
       console.error("Cannot grab tasks", error);
     }
@@ -102,29 +129,12 @@ const Todo = () => {
 
   const addTask = async () => {
     try {
-      // Mapping priority with status
-      let priorityValue;
-      switch (newTask.priority) {
-        case "Low":
-          priorityValue = 1;
-          break;
-        case "Medium":
-          priorityValue = 2;
-          break;
-        case "High":
-          priorityValue = 3;
-          break;
-        default:
-          priorityValue = 1; // Set a default value if needed
-      }
-
       // Update the newTask object passed with correct integer representation (status)
       const updatedNewTask = {
         ...newTask,
-        status: priorityValue,
         dateCreated: new Date().toLocaleString(),
       };
-
+  
       const response = await axios.post(
         "http://localhost:5001/api/task/",
         updatedNewTask,
@@ -134,14 +144,20 @@ const Todo = () => {
       );
 
       const returnedTask = response.data;
-
-      const updatedTasks = [
-        ...tasks,
-        returnedTask,
-      ];
-
+  
+      // Mapping status to priority for the returned task
+      const priorityForReturnedTask = getPriorityFromStatus(returnedTask.status);
+  
+      // Update the returned task object with the mapped priority
+      const updatedReturnedTask = {
+        ...returnedTask,
+        priority: priorityForReturnedTask,
+      };
+  
+      const updatedTasks = [...tasks, updatedReturnedTask];
+  
       setTasks(updatedTasks);
-
+  
       setNewTask({
         title: "",
         description: "",
@@ -153,14 +169,48 @@ const Todo = () => {
       console.error("cannot add task", error);
     }
   };
+  
+  // Function to get priority based on status
+  const getPriorityFromStatus = (status) => {
+    let priority;
+    switch (status) {
+      case 1:
+        priority = "Low";
+        break;
+      case 2:
+        priority = "Medium";
+        break;
+      case 3:
+        priority = "High";
+        break;
+      default:
+        priority = "Low"; // Default priority if status is not 1, 2, or 3
+    }
+    return priority;
+  };
 
-  //delete tasks (work on retrieving particular task id and then deleting it)
-  const deleteTask = (index) => {
+  //delete tasks 
+  const deleteTask = async (index) => {
+    try{
+      const deleted_task = tasks[index]._id; 
+      const response = await axios.delete(
+        `http://localhost:5001/api/task/${deleted_task}`,
+        {
+          headers: { authorization: `Bearer ${accessToken}` },
+        }
+      );
+        
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
     setTasks(updatedTasks);
-  };
+    } 
+    catch(error){
+      console.error("Cannot grab tasks", error);
+    }
 
+    };
+
+    
   return (
     <>
       <Header />
