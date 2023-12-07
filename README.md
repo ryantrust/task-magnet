@@ -21,6 +21,23 @@ REACT_APP_AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
 MONGO_CONNECTION_STRING=mongodb+srv://*********:**************@cluster*.*******.mongodb.net/******?retryWrites=true&w=majority
 ```
 
+## Run
+
+```shell
+npm install
+```
+
+Run React process:
+```sh
+npm start
+```
+
+Run backend server:
+```sh
+cd api-server
+npm start
+```
+
 ### Available Scripts
 
 In the project directory, you can run:
