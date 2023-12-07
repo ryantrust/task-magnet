@@ -215,23 +215,22 @@ const Todo = () => {
   //delete tasks 
   const deleteTask = async (index) => {
     try {
+      const updatedTasks = [...tasks];
+      updatedTasks.splice(index, 1);
+      setTasks(updatedTasks);
+      setFilteredTasks(updatedTasks);
+
       const deleted_task = tasks[index]._id;
-      const response = await axios.delete(
+      await axios.delete(
         `${process.env.REACT_APP_API_SERVER_URL}/api/task/${deleted_task}`,
         {
           headers: { authorization: `Bearer ${accessToken}` },
         }
       );
-
-      const updatedTasks = [...tasks];
-      updatedTasks.splice(index, 1);
-      setTasks(updatedTasks);
-      setFilteredTasks(updatedTasks);
     }
     catch (error) {
       console.error("Cannot grab tasks", error);
     }
-
   };
 
 
