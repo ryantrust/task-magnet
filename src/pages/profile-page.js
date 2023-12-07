@@ -13,28 +13,21 @@ const CheckProfile = () => {
 
     useEffect(() => {
         let isMounted = true;
-
         const getMessage = async () => {
-            const accessToken = await getAccessTokenSilently({ authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE } });
+            let accessToken = await getAccessTokenSilently({ authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE } });
             const { data, error } = await getProtectedResource(accessToken);
-
             if (!isMounted) {
                 return;
             }
-
             if (data) {
                 setMessage(JSON.stringify(data, null, 2));
             }
-
             if (error) {
                 setMessage(JSON.stringify(error, null, 2));
             }
-
-
         };
 
         getMessage();
-
         return () => {
             isMounted = false;
         };
@@ -51,10 +44,15 @@ const CheckProfile = () => {
                     <img
                         src={user.picture}
                         alt={user.name}
-                        className="w-20 h-20 rounded-full mx-auto mb-2"
+                        className="w-40 h-40 rounded-full mx-auto mb-2 mt-2"
                     />
-                    <h2 className="text-2xl font-bold text-center">{user.name}</h2>
-                    <p className="text-sm text-gray-600 text-center">{user.email}</p>
+                            <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-center">Your username: {user.name}</h2>
+                    <p className="text-sm text-gray-400 text-center">Your email: {user.email}</p>
+                    
+                    <p className="text-sm text-gray-500 text-center">Email verified: {user.email_verified || false} </p>
+                    <p className="text-sm text-gray-500 text-center">UserID: {user.sub} </p>
+                            </div>
                 </div>
                 <h3 className="text-xl font-bold mb-2">User Metadata</h3>
                 {user ? (
@@ -64,9 +62,9 @@ const CheckProfile = () => {
                 ) : (
                     <p>No user metadata defined</p>
                 )}
-                <div className="mt-4">
-                    <p className="text-red-500">Auth only: {message}</p>
-                </div>
+                // <div className="mt-4">
+                //     <p className="text-red-500">Auth only: {message}</p>
+                // </div>
                 <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
                     <a href="/dashboard">Dashboard</a>
                 </button>
