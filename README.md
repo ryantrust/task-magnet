@@ -18,7 +18,7 @@ REACT_APP_AUTH0_CALLBACK_URL=${CLIENT_ORIGIN_URL}/callback
 AUTH0_SECRET=****************************************************************
 AUTH0_AUDIENCE=https://**********/api
 REACT_APP_AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
-MONGO_CONNECTION_STRING=mongodb+srv://*********:**************@cluster*.*******.mongodb.net/?retryWrites=true&w=majority
+MONGO_CONNECTION_STRING=mongodb+srv://*********:**************@cluster*.*******.mongodb.net/******?retryWrites=true&w=majority
 ```
 
 ### Available Scripts
