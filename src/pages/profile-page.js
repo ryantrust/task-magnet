@@ -7,9 +7,7 @@ const CheckProfile = () => {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout } = useAuth0();
     const [message, setMessage] = useState("");
 
-    // const [userMetadata, setUserMetadata] = useState(null);
     const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-
 
     useEffect(() => {
         let isMounted = true;
@@ -37,6 +35,19 @@ const CheckProfile = () => {
         return <div>Loading ...</div>;
     }
 
+    const formattedMetadata = user ? (
+        <div className="bg-gray-200 p-4 rounded-md overflow-auto">
+            <h3 className="text-xl font-bold mb-2">User Metadata:</h3>
+            <p><strong>Username:</strong> {user.name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Email Verified:</strong> {user.email_verified ? 'Yes' : 'No'}</p>
+            <p><strong>User ID:</strong> {user.sub}</p>
+            <p><strong>Updated At:</strong> {user.updated_at}</p> 
+        </div>
+    ) : (
+        <p>No user metadata defined</p>
+    );
+
     return (
         isAuthenticated && (
             <div className="flex flex-col items-center justify-center min-h-screen">
@@ -46,25 +57,20 @@ const CheckProfile = () => {
                         alt={user.name}
                         className="w-40 h-40 rounded-full mx-auto mb-2 mt-2"
                     />
-                            <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-center">Your username: {user.name}</h2>
-                    <p className="text-sm text-gray-400 text-center">Your email: {user.email}</p>
-                    
-                    <p className="text-sm text-gray-500 text-center">Email verified: {user.email_verified || false} </p>
-                    <p className="text-sm text-gray-500 text-center">UserID: {user.sub} </p>
-                            </div>
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-center">Your username: {user.name}</h2>
+                        <p className="text-sm text-gray-400 text-center">Your email: {user.email}</p>
+                        <p className="text-sm text-gray-500 text-center">Email verified: {user.email_verified || false} </p>
+                        <p className="text-sm text-gray-500 text-center">UserID: {user.sub} </p>
+                    </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">User Metadata</h3>
-                {user ? (
-                    <pre className="bg-gray-200 p-4 rounded-md overflow-auto">
-                        {JSON.stringify(user, null, 2)}
-                    </pre>
-                ) : (
-                    <p>No user metadata defined</p>
-                )}
-                // <div className="mt-4">
-                //     <p className="text-red-500">Auth only: {message}</p>
-                // </div>
+                <div className="mt-4">
+                    {formattedMetadata}
+                </div>
+                {/* Uncomment this section if you want to display the 'message' */}
+                {/* <div className="mt-4">
+                    <p className="text-red-500">Auth only: {message}</p>
+                </div> */}
                 <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
                     <a href="/dashboard">Dashboard</a>
                 </button>
@@ -74,7 +80,6 @@ const CheckProfile = () => {
                 >
                     Log Out
                 </button>
-
             </div>
         )
     );
