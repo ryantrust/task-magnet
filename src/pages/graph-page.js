@@ -83,7 +83,7 @@ const CombinedChartComponent = () => {
             x: {
               title: {
                 display: true,
-                text: "Date",
+                text: "Date Created",
               },
             },
             y: {
