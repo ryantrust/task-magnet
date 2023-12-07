@@ -240,12 +240,15 @@ const Todo = () => {
       <Header />
       <div className="container mx-auto mt-8 bg-gray-100 p-8 rounded shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Todo List</h1>
+        <div className="mb-6">
         <input
           type="text"
           value={searchItem}
           onChange={handleInputChange}
-          placeholder='Type to search'
+          placeholder="Search tasks..."
+          className="p-3 border rounded w-full focus:outline-none focus:border-blue-500"
         />
+      </div>
         <div className="mb-6 flex flex-col">
           <div className="flex items-center">
             <select
@@ -332,8 +335,8 @@ const Todo = () => {
   );
 };
 
-const getPriorityColor = (priority) => {
-  switch (priority) {
+const getPriorityColor = (status) => {
+  switch (status) {
     case 1:
       return "bg-blue-200";
     case 2:
