@@ -4,6 +4,7 @@ import Chart from "chart.js/auto";
 import Header from "../components/header";
 import axios from "axios";
 import {useAuth0} from "@auth0/auth0-react";
+import {format} from "date-fns";
 
 const CombinedChartComponent = () => {
   const { getAccessTokenSilently} = useAuth0();
@@ -44,13 +45,16 @@ const CombinedChartComponent = () => {
 
       const dataCountMap = data.reduce((map, item) => {
         const date = new Date(item.dateCreated);
-        const timestamp = date.getTime(); // Convert date to timestamp
+        const timestamp = format(date.getTime(), "MM/dd/yyyy"); // Convert date to timestamp
         map[timestamp] = (map[timestamp] || 0) + 1;
         return map;
       }, {});
 
-      const labels = Object.keys(dataCountMap);
-      const dataValues = Object.values(dataCountMap);
+      let items = Object.entries(dataCountMap);
+      items.sort((itemA, itemB) => itemA > itemB);
+
+      let keys = items.map(entry => entry[0]);
+      let vals = items.map(entry => entry[1]);
 
       const ctx = chartRef.current.getContext("2d");
 
@@ -63,11 +67,11 @@ const CombinedChartComponent = () => {
       chartInstance.current = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: labels,
+          labels: keys,
           datasets: [
             {
               label: "Number of Tasks",
-              data: dataValues,
+              data: vals,
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 1,
@@ -77,16 +81,9 @@ const CombinedChartComponent = () => {
         options: {
           scales: {
             x: {
-              type: "linear",
               title: {
                 display: true,
                 text: "Date",
-              },
-              ticks: {
-                callback: function (value, index, values) {
-                  // Format the timestamp as a date
-                  return new Date(value).toLocaleDateString();
-                },
               },
             },
             y: {
@@ -95,6 +92,9 @@ const CombinedChartComponent = () => {
                 display: true,
                 text: "Number of Tasks",
               },
+              ticks: {
+                stepSize: 1
+              }
             },
           },
           plugins: {
@@ -112,11 +112,6 @@ const CombinedChartComponent = () => {
                       ": " +
                       tooltipItem.yLabel
                   );
-                },
-                title: function (tooltipItem, data) {
-                  // Use the timestamp directly for x-axis tooltip
-                  const timestamp = tooltipItem[0].parsed.x;
-                  return new Date(timestamp).toLocaleDateString();
                 },
               },
             },
