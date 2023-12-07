@@ -8,10 +8,24 @@ import { getProtectedResource } from "../services/message.service";
 
 const Todo = () => {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [searchItem, setSearchItem] = useState('');
+
+  const handleInputChange = (e) => {
+    const searchTerm = e.target.value;
+    setSearchItem(searchTerm)
+
+    const filteredTasks = tasks.filter((task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredTasks(filteredTasks);
+  }
+
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
-    priority: "Low",
+    status: 1,
     dateDue: new Date(),
     dateCreated: "",
   });
@@ -59,33 +73,34 @@ const Todo = () => {
       const response = await axios.get("http://localhost:5001/api/task/", {
         headers: { authorization: `Bearer ${accessToken}` },
       });
-  
+
       // Mapping status to priority
       const mappedTasks = response.data.map(task => {
-        let priority;
+        let statusVar;
         switch (task.status) {
           case 1:
-            priority = "Low";
+            statusVar = "Low";
             break;
           case 2:
-            priority = "Medium";
+            statusVar = "Medium";
             break;
           case 3:
-            priority = "High";
+            statusVar = "High";
             break;
           default:
-            priority = "Low"; // Default priority if status is not 1, 2, or 3
+            statusVar = "Low"; // Default priority if status is not 1, 2, or 3
         }
-  
+
         // Creating a new object with the priority attribute
         return {
           ...task,
-          priority: priority
+          statusString: statusVar
         };
       });
-  
+
       // Setting the tasks with updated priorities
       setTasks(mappedTasks);
+      setFilteredTasks(mappedTasks);
       console.log(response);
     } catch (error) {
       console.error("Cannot grab tasks", error);
@@ -101,7 +116,7 @@ const Todo = () => {
     const csvData = tasks.map((task) => ({
       Title: task.title,
       Description: task.description,
-      Priority: task.priority,
+      Status: task.status,
       "Due Date": task.dateDue ? task.dateDue.toLocaleString() : "Not set",
       "Created On": task.dateCreated,
     }));
@@ -134,7 +149,7 @@ const Todo = () => {
         ...newTask,
         dateCreated: new Date().toLocaleString(),
       };
-  
+
       const response = await axios.post(
         "http://localhost:5001/api/task/",
         updatedNewTask,
@@ -144,24 +159,23 @@ const Todo = () => {
       );
 
       const returnedTask = response.data;
-  
+
       // Mapping status to priority for the returned task
       const priorityForReturnedTask = getPriorityFromStatus(returnedTask.status);
-  
+
       // Update the returned task object with the mapped priority
       const updatedReturnedTask = {
-        ...returnedTask,
-        priority: priorityForReturnedTask,
+        ...returnedTask
       };
-  
+
       const updatedTasks = [...tasks, updatedReturnedTask];
-  
+
       setTasks(updatedTasks);
-  
+      setFilteredTasks(updatedTasks);
       setNewTask({
         title: "",
         description: "",
-        priority: "Low",
+        status: 1,
         dateDue: new Date(),
         dateCreated: "",
       });
@@ -169,61 +183,76 @@ const Todo = () => {
       console.error("cannot add task", error);
     }
   };
-  
+
   // Function to get priority based on status
   const getPriorityFromStatus = (status) => {
-    let priority;
     switch (status) {
       case 1:
-        priority = "Low";
-        break;
+        return "Low";
       case 2:
-        priority = "Medium";
-        break;
+        return "Medium";
       case 3:
-        priority = "High";
-        break;
+        return "High";
       default:
-        priority = "Low"; // Default priority if status is not 1, 2, or 3
+        return "Low"; // Default priority if status is not 1, 2, or 3
     }
-    return priority;
+  };
+
+  // Function to get priority based on status
+  const getStatusFromPriority = (priority) => {
+    switch (priority) {
+      case "Low":
+        return 1;
+      case "Medium":
+        return 2;
+      case "High":
+        return 3;
+      default:
+        return 1; // Default priority if status is not 1, 2, or 3
+    }
   };
 
   //delete tasks 
   const deleteTask = async (index) => {
-    try{
-      const deleted_task = tasks[index]._id; 
+    try {
+      const deleted_task = tasks[index]._id;
       const response = await axios.delete(
         `http://localhost:5001/api/task/${deleted_task}`,
         {
           headers: { authorization: `Bearer ${accessToken}` },
         }
       );
-        
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
-    setTasks(updatedTasks);
-    } 
-    catch(error){
+
+      const updatedTasks = [...tasks];
+      updatedTasks.splice(index, 1);
+      setTasks(updatedTasks);
+      setFilteredTasks(updatedTasks);
+    }
+    catch (error) {
       console.error("Cannot grab tasks", error);
     }
 
-    };
+  };
 
-    
+
   return (
     <>
       <Header />
       <div className="container mx-auto mt-8 bg-gray-100 p-8 rounded shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Todo List</h1>
-
+        <input
+          type="text"
+          value={searchItem}
+          onChange={handleInputChange}
+          placeholder='Type to search'
+        />
         <div className="mb-6 flex flex-col">
           <div className="flex items-center">
             <select
               className="flex-1 p-3 border rounded mr-3 focus:outline-none focus:border-blue-500"
-              value={newTask.priority}
+              value={getPriorityFromStatus(newTask.status)}
               onChange={(e) =>
-                setNewTask({ ...newTask, priority: e.target.value })
+                setNewTask({ ...newTask, status: getStatusFromPriority(e.target.value) })
               }
             >
               <option value="Low">Low</option>
@@ -271,11 +300,11 @@ const Todo = () => {
         </div>
 
         <ul>
-          {tasks.map((task, index) => (
+          {filteredTasks.map((task, index) => (
             <li key={index} className="mb-6">
               <div
                 className={`flex justify-between items-center bg-white p-6 rounded shadow-md ${getPriorityColor(
-                  task.priority
+                  task.status
                 )}`}
               >
                 <div>
@@ -283,10 +312,9 @@ const Todo = () => {
                     {task.title}
                   </h2>
                   <p className="text-gray-600">{task.description}</p>
-                  <p className="text-sm text-gray-500">{`Priority: ${task.priority}`}</p>
-                  <p className="text-sm text-gray-500">{`Due date: ${
-                    task.dateDue ? task.dateDue.toLocaleString() : "Not set"
-                  }`}</p>
+                  <p className="text-sm text-gray-500">{`Priority: ${getPriorityFromStatus(task.status)}`}</p>
+                  <p className="text-sm text-gray-500">{`Due date: ${task.dateDue ? task.dateDue.toLocaleString() : "Not set"
+                    }`}</p>
                   <p className="text-sm text-gray-500">{`Created on: ${task.dateCreated}`}</p>
                 </div>
                 <button
@@ -306,11 +334,11 @@ const Todo = () => {
 
 const getPriorityColor = (priority) => {
   switch (priority) {
-    case "low":
+    case 1:
       return "bg-blue-200";
-    case "medium":
+    case 2:
       return "bg-yellow-200";
-    case "high":
+    case 3:
       return "bg-red-200";
     default:
       return "";
