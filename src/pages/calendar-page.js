@@ -75,6 +75,7 @@ const Calendar = () => {
   };
 
   const deleteTask = async (id) => {
+    //TODO: FIX
     const response = await axios.delete(
       `${process.env.REACT_APP_API_SERVER_URL}/api/task/${id}`,
       {
@@ -83,6 +84,7 @@ const Calendar = () => {
     );
     if (response.status !== 200) throw new Error();
     let index = tasks.findIndex(task => task._id === id);
+    console.log(tasks, index, id);
     setTasks(tasks.splice(index, 1));
   };
 
@@ -173,7 +175,7 @@ const Calendar = () => {
                   const formattedDate =
                     generateDays()[rowIndex * daysOfWeek.length + colIndex];
                   const dayTasks = tasks.filter(
-                    (t) => new Date(t.dateDue).toDateString() === new Date(formattedDate).toDateString()
+                    (t) => new Date(t.dateDue).toDateString() === new Date(adjustedDate(formattedDate)).toDateString()
                   );
 
                   return (
@@ -207,7 +209,7 @@ const Calendar = () => {
                 Tasks for {format(adjustedDate(selectedDay), "MMMM d, yyyy")}
               </h3>
               {tasks
-                .filter((t) => new Date(t.dateDue).toDateString() === new Date(selectedDay).toDateString())
+                .filter((t) => new Date(t.dateDue).toDateString() === new Date(adjustedDate(selectedDay)).toDateString())
                 .map((task) => (
                   <div key={task._id} className="mb-2">
                     {task.title}
@@ -219,7 +221,7 @@ const Calendar = () => {
                     </button>
                   </div>
                 ))}
-              {tasks.filter((t) => new Date(t.dateDue).toDateString() === new Date(selectedDay).toDateString()).length === 0 && (
+              {tasks.filter((t) => new Date(t.dateDue).toDateString() === new Date(adjustedDate(selectedDay)).toDateString()).length === 0 && (
                 <p>No tasks to display</p>
               )}
               <button
