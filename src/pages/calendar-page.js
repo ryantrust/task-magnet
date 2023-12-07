@@ -1,20 +1,60 @@
-import React, { useState } from "react";
-import {
-  format,
-  addDays,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-} from "date-fns";
-import { enUS } from "date-fns/locale";
-import Header from "../components/header"; // Add this import
+import React, {useEffect, useState} from "react";
+import {addDays, endOfMonth, endOfWeek, format, startOfMonth, startOfWeek,} from "date-fns";
+import {enUS} from "date-fns/locale";
+import Header from "../components/header";
+import axios from "axios";
+import {useAuth0} from "@auth0/auth0-react";
+
+const adjustedDate = (time) => {
+  let d = new Date(time);
+  let offset = new Date().getTimezoneOffset() * 60 * 1000;
+  return new Date(d.getTime() + offset);
+}
 
 const Calendar = () => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [selectedDay, setSelectedDay] = useState(null);
+  const { getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchTokenAndTasks = async () => {
+      try {
+        const accessToken = await getAccessTokenSilently({authorizationParams: {audience: process.env.REACT_APP_AUTH0_AUDIENCE}});
+        //setAccessToken(accessToken);
+
+        // Call getTask right after obtaining the access token
+        await getTask(accessToken);
+      } catch (error) {
+        console.error('Error fetching token or tasks:', error);
+      } finally {
+        if (!isMounted) {
+
+        }
+      }
+    };
+
+    fetchTokenAndTasks();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getAccessTokenSilently]);
+
+  const getTask = async (accessToken) => {
+    try {
+      const response = await axios.get('http://localhost:5001/api/task/', {
+        headers: {authorization: `Bearer ${accessToken}`},
+      });
+      setTasks(response.data);
+    } catch (error) {
+      console.error('Cannot grab tasks', error);
+    }
+  };
 
   const addTask = () => {
     if (task && date) {
@@ -39,11 +79,11 @@ const Calendar = () => {
 
     for (
       let i = 0;
-      i < Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-      i++
+      i <= Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      ++i
     ) {
       const currentDate = addDays(startDate, i);
-      const formattedDate = format(addDays(currentDate, 1), "yyyy-MM-dd");
+      const formattedDate = format(currentDate, "yyyy-MM-dd");
       days.push(formattedDate);
     }
 
@@ -73,9 +113,16 @@ const Calendar = () => {
           <input
             type="text"
             className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
-            placeholder="Enter task"
+            placeholder="Task name"
             value={task}
             onChange={(e) => setTask(e.target.value)}
+          />
+          <input
+              type="text"
+              placeholder="Description"
+              className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
           />
           <input
             type="date"
@@ -124,7 +171,7 @@ const Calendar = () => {
                       onClick={() => handleDayClick(formattedDate)}
                     >
                       <div className="text-lg font-semibold mb-2">
-                        {format(new Date(formattedDate), "d")}
+                        {format(adjustedDate(formattedDate), "d")}
                       </div>
                       {dayTasks.length > 0 && (
                         <div className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></div>
@@ -141,7 +188,7 @@ const Calendar = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-4 rounded-md">
               <h3 className="text-lg font-semibold mb-4">
-                Tasks for {format(new Date(selectedDay), "MMMM d, yyyy")}
+                Tasks for {format(adjustedDate(selectedDay), "MMMM d, yyyy")}
               </h3>
               {tasks
                 .filter((t) => t.date === selectedDay)
