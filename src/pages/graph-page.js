@@ -25,7 +25,7 @@ const CombinedChartComponent = () => {
 
     const getTasks = async (accessToken) => {
       try {
-        const response = await axios.get('http://localhost:5001/api/task/', {
+        const response = await axios.get(`${process.env.REACT_APP_API_SERVER_URL}/api/task/`, {
           headers: { authorization: `Bearer ${accessToken}` },
         });
         return response.data;

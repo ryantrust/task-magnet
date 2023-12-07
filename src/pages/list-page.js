@@ -70,7 +70,7 @@ const Todo = () => {
   //load the old tasks on the page (needs mapping for priorities)
   const getTask = async (accessToken) => {
     try {
-      const response = await axios.get("http://localhost:5001/api/task/", {
+      const response = await axios.get(`${process.env.REACT_APP_API_SERVER_URL}/api/task/`, {
         headers: { authorization: `Bearer ${accessToken}` },
       });
 
@@ -151,7 +151,7 @@ const Todo = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5001/api/task/",
+        `${process.env.REACT_APP_API_SERVER_URL}/api/task/`,
         updatedNewTask,
         {
           headers: { authorization: `Bearer ${accessToken}` },
@@ -217,7 +217,7 @@ const Todo = () => {
     try {
       const deleted_task = tasks[index]._id;
       const response = await axios.delete(
-        `http://localhost:5001/api/task/${deleted_task}`,
+        `${process.env.REACT_APP_API_SERVER_URL}/api/task/${deleted_task}`,
         {
           headers: { authorization: `Bearer ${accessToken}` },
         }
