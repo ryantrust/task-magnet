@@ -76,12 +76,8 @@ const PomodoroTimer = () => {
   };
 
   const adjustMinutes = (value) => {
-    if (!isActive) {
-      const newMinutes = minutes + value;
-      if (newMinutes >= 0) {
-        setMinutes(newMinutes);
-      }
-    }
+    const newMinutes = minutes + value;
+    if (newMinutes >= 0) setMinutes(newMinutes);
   };
 
   const formatTime = (duration) => {

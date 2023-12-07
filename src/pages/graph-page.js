@@ -132,7 +132,7 @@ const CombinedChartComponent = () => {
       };
     };
     setupGraph();
-  }, [accessToken]);
+  }, [accessToken, getAccessTokenSilently]);
 
   return (
       <>

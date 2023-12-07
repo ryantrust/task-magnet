@@ -18,8 +18,9 @@ const Header = () => {
 
   const profilePic =
     user && user.picture ? (
-      <img
+      <img // eslint-disable-line jsx-a11y/img-redundant-alt
         className="w-8 h-8 rounded-full cursor-pointer flex items-center justify-center transform transition-transform hover:scale-105"
+        alt="Profile picture"
         src={user.picture}
       />
     ) : (

@@ -21,7 +21,7 @@ async function initialize() {
 }
 
 function getTasksFromUser(user) {
-    return dbConnection.collection("tasks").find({"author": user}).toArray();
+    return dbConnection.collection("tasks").find({"userId": user}).toArray();
 }
 
 function addTask(author, title, description, priority, status, dueDate, sharedWith) {
