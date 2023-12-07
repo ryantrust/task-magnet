@@ -70,7 +70,7 @@ const Todo = () => {
   //load the old tasks on the page (needs mapping for priorities)
   const getTask = async (accessToken) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_SERVER_URL}/api/task/`, {
+      const response = await axios.get("http://localhost:5001/api/task/", {
         headers: { authorization: `Bearer ${accessToken}` },
       });
 
@@ -151,7 +151,7 @@ const Todo = () => {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_SERVER_URL}/api/task/`,
+        "http://localhost:5001/api/task/",
         updatedNewTask,
         {
           headers: { authorization: `Bearer ${accessToken}` },
@@ -215,22 +215,23 @@ const Todo = () => {
   //delete tasks 
   const deleteTask = async (index) => {
     try {
-      const updatedTasks = [...tasks];
-      updatedTasks.splice(index, 1);
-      setTasks(updatedTasks);
-      setFilteredTasks(updatedTasks);
-
       const deleted_task = tasks[index]._id;
-      await axios.delete(
-        `${process.env.REACT_APP_API_SERVER_URL}/api/task/${deleted_task}`,
+      const response = await axios.delete(
+        `http://localhost:5001/api/task/${deleted_task}`,
         {
           headers: { authorization: `Bearer ${accessToken}` },
         }
       );
+
+      const updatedTasks = [...tasks];
+      updatedTasks.splice(index, 1);
+      setTasks(updatedTasks);
+      setFilteredTasks(updatedTasks);
     }
     catch (error) {
       console.error("Cannot grab tasks", error);
     }
+
   };
 
 
@@ -240,14 +241,14 @@ const Todo = () => {
       <div className="container mx-auto mt-8 bg-gray-100 p-8 rounded shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Todo List</h1>
         <div className="mb-6">
-        <input
-          type="text"
-          value={searchItem}
-          onChange={handleInputChange}
-          placeholder="Search tasks..."
-          className="p-3 border rounded w-full focus:outline-none focus:border-blue-500"
-        />
-      </div>
+          <input
+            type="text"
+            value={searchItem}
+            onChange={handleInputChange}
+            placeholder="Search tasks..."
+            className="p-3 border rounded w-full focus:outline-none focus:border-blue-500"
+          />
+        </div>
         <div className="mb-6 flex flex-col">
           <div className="flex items-center">
             <select
@@ -305,7 +306,7 @@ const Todo = () => {
           {filteredTasks.map((task, index) => (
             <li key={index} className="mb-6">
               <div
-                className={`flex justify-between items-center bg-white p-6 rounded shadow-md ${getPriorityColor(
+                className={`${getPriorityColor(
                   task.status
                 )}`}
               >
@@ -314,10 +315,10 @@ const Todo = () => {
                     {task.title}
                   </h2>
                   <p className="text-gray-600">{task.description}</p>
-                  <p className="text-sm text-gray-500">{`Priority: ${getPriorityFromStatus(task.status)}`}</p>
-                  <p className="text-sm text-gray-500">{`Due date: ${task.dateDue ? task.dateDue.toLocaleString() : "Not set"
-                    }`}</p>
-                  <p className="text-sm text-gray-500">{`Created on: ${task.dateCreated}`}</p>
+                  <p className="text-sm font-medium">{`Priority: `}<span className="font-normal text-gray-500">{getPriorityFromStatus(task.status)}</span></p>
+                  <p className="text-sm font-medium">{`Due date: `} <span className="font-normal text-gray-500">{task.dateDue ? task.dateDue.toLocaleString() : "Not set"
+                  }</span></p>
+                  <p className="text-sm  font-medium">{`Created on: `} <span className="font-normal text-gray-500">{task.dateCreated}</span></p>
                 </div>
                 <button
                   className="bg-red-500 text-white p-3 rounded"
@@ -334,16 +335,16 @@ const Todo = () => {
   );
 };
 
-const getPriorityColor = (status) => {
-  switch (status) {
+const getPriorityColor = (priority) => {
+  switch (priority) {
     case 1:
-      return "bg-blue-200";
+      return "flex justify-between items-center p-6 rounded shadow-md bg-blue-200";
     case 2:
-      return "bg-yellow-200";
+      return "flex justify-between items-center p-6 rounded shadow-md bg-yellow-200";
     case 3:
-      return "bg-red-200";
+      return "flex justify-between items-center p-6 rounded shadow-md bg-red-200";
     default:
-      return "";
+      return "flex justify-between items-center bg-white p-6 rounded shadow-md";
   }
 };
 
