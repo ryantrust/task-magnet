@@ -4,6 +4,7 @@ import {enUS} from "date-fns/locale";
 import Header from "../components/header";
 import axios from "axios";
 import {useAuth0} from "@auth0/auth0-react";
+import DatePicker from "react-datepicker";
 
 const adjustedDate = (time) => {
   let d = new Date(time);
@@ -13,11 +14,12 @@ const adjustedDate = (time) => {
 
 const Calendar = () => {
   const [tasks, setTasks] = useState([]);
-  const [task, setTask] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
+  const [dateDue, setDateDue] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
-  const { getAccessTokenSilently } = useAuth0();
+  const [accessToken, setAccessToken] = useState("");
+  const { getAccessTokenSilently, user } = useAuth0();
 
   useEffect(() => {
     let isMounted = true;
@@ -25,10 +27,10 @@ const Calendar = () => {
     const fetchTokenAndTasks = async () => {
       try {
         const accessToken = await getAccessTokenSilently({authorizationParams: {audience: process.env.REACT_APP_AUTH0_AUDIENCE}});
-        //setAccessToken(accessToken);
+        setAccessToken(accessToken);
 
-        // Call getTask right after obtaining the access token
-        await getTask(accessToken);
+        // Call getTasks right after obtaining the access token
+        await getTasks(accessToken);
       } catch (error) {
         console.error('Error fetching token or tasks:', error);
       } finally {
@@ -45,9 +47,9 @@ const Calendar = () => {
     };
   }, [getAccessTokenSilently]);
 
-  const getTask = async (accessToken) => {
+  const getTasks = async (accessToken) => {
     try {
-      const response = await axios.get('http://localhost:5001/api/task/', {
+      const response = await axios.get(`${process.env.REACT_APP_API_SERVER_URL}/api/task/`, {
         headers: {authorization: `Bearer ${accessToken}`},
       });
       setTasks(response.data);
@@ -56,18 +58,32 @@ const Calendar = () => {
     }
   };
 
-  const addTask = () => {
-    if (task && date) {
-      setTasks([...tasks, { date, task }]);
-      setTask("");
-      setDate("");
-    }
+  const addTask = async () => {
+    if (!title || !dateDue) throw new Error();
+    const newTask = { dateDue, title, description, status: 2, userId: user.sub };
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_SERVER_URL}/api/task/`,
+      newTask,
+      {
+        headers: { authorization: `Bearer ${accessToken}` },
+      }
+    );
+    setTasks([...tasks, response.data]);
+    setTitle("");
+    setDescription("");
+    return response.data;
   };
 
-  const deleteTask = (index) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
-    setTasks(updatedTasks);
+  const deleteTask = async (id) => {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_SERVER_URL}/api/task/${id}`,
+      {
+        headers: { authorization: `Bearer ${accessToken}` },
+      }
+    );
+    if (response.status !== 200) throw new Error();
+    let index = tasks.findIndex(task => task._id === id);
+    setTasks(tasks.splice(index, 1));
   };
 
   const generateDays = () => {
@@ -114,8 +130,8 @@ const Calendar = () => {
             type="text"
             className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
             placeholder="Task name"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <input
               type="text"
@@ -124,11 +140,13 @@ const Calendar = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
           />
-          <input
-            type="date"
+          <DatePicker
             className="border p-2 mr-2 focus:outline-none focus:border-blue-500"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            selected={dateDue}
+            onChange={setDateDue}
+            placeholderText="Select due date"
+            calendarClassName="fixed z-50"
+            showTimeInput
           />
           <button
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
@@ -155,17 +173,15 @@ const Calendar = () => {
                   const formattedDate =
                     generateDays()[rowIndex * daysOfWeek.length + colIndex];
                   const dayTasks = tasks.filter(
-                    (t) => t.date === formattedDate
+                    (t) => new Date(t.dateDue).toDateString() === new Date(formattedDate).toDateString()
                   );
 
                   return (
                     <td
                       key={formattedDate}
                       className={`border p-4 relative cursor-pointer ${
-                        colIndex === 0
+                        colIndex === 0 || colIndex === 6
                           ? "text-red-500"
-                          : colIndex === 6
-                          ? "text-blue-500"
                           : ""
                       }`}
                       onClick={() => handleDayClick(formattedDate)}
@@ -191,19 +207,19 @@ const Calendar = () => {
                 Tasks for {format(adjustedDate(selectedDay), "MMMM d, yyyy")}
               </h3>
               {tasks
-                .filter((t) => t.date === selectedDay)
-                .map((task, index) => (
-                  <div key={index} className="mb-2">
-                    {task.task}
+                .filter((t) => new Date(t.dateDue).toDateString() === new Date(selectedDay).toDateString())
+                .map((task) => (
+                  <div key={task._id} className="mb-2">
+                    {task.title}
                     <button
                       className="ml-2 text-red-500"
-                      onClick={() => deleteTask(index)}
+                      onClick={() => deleteTask(task._id)}
                     >
                       Delete
                     </button>
                   </div>
                 ))}
-              {tasks.filter((t) => t.date === selectedDay).length === 0 && (
+              {tasks.filter((t) => new Date(t.dateDue).toDateString() === new Date(selectedDay).toDateString()).length === 0 && (
                 <p>No tasks to display</p>
               )}
               <button
