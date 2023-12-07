@@ -1,41 +1,36 @@
-const mongoHandler = require("../mongo");
-const {ObjectId} = require("mongodb");
+const dotenv = require('dotenv');
 const assert = require('assert');
 const {step} = require("mocha-steps");
-
-it('Initialize database', mongoHandler.mongoInit).timeout(20 * 1000);
-
-it('Get static task', () => {
-    return mongoHandler.getTasksFromUser("auth0|656aa4f54d05409988700467").then(results => {
-        assert.ok(results.some(result => result._id.equals('656be3bd1d74cf029391341b')));
-    });
-});
-
-it('Close connection', mongoHandler.close);
+const TaskModel = require('../models/Task');
+const mongoose = require("mongoose");
+dotenv.config({ path: "../.env" });
 
 describe('Dynamic task management', () => {
-    let taskID;
-    step('Initialize connection', mongoHandler.mongoInit);
-    step('Create task', () => {
-        return mongoHandler.addTask("mocha-test-user-1",
-            "test-title", "test-desc", 0, 0,
-            Date.now(), ["mocha-test-user-2"]).then(result => {
-                assert.ok(result.acknowledged);
-                taskID = result.insertedId;
-        });
+  let taskID;
+  step('Initialize connection', () => {
+    return mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+  });
+  step('Create task', () => {
+    return TaskModel.create({
+      userId: "mocha-test-user-1",
+      title: "test-tile", description: "test-desc", dateDue: new Date()
+    }).then(function (result) {
+      taskID = result._id;
+      assert.ok(taskID);
     });
-    step('Get task', () => {
-        return mongoHandler.getTasksFromUser("mocha-test-user-1").then(results => {
-            assert.ok(results.some(result => result._id.equals(taskID)));
-        });
+  });
+  step('Get task', () => {
+    return TaskModel.findById(taskID).then(result => {
+      assert.ok(result);
     });
-    step('Delete task', () => {
-        return mongoHandler.deleteTask(taskID).then(async result => {
-            assert.ok(result);
-            await mongoHandler.getTasksFromUser("mocha-test-user-1").then(results => {
-                assert.ok(!results.some(result => result._id.equals(taskID)));
-            });
-        });
+  });
+  step('Delete task', () => {
+    return TaskModel.findByIdAndDelete(taskID).then(async () => {
+      let foundTask = await TaskModel.findById(taskID);
+      assert.equal(foundTask, null);
     });
-    step('Close connection', mongoHandler.close);
+  });
+  step('Close connection', () => {
+    return mongoose.connection.close();
+  });
 });
